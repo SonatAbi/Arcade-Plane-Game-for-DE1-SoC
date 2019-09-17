@@ -1,0 +1,40 @@
+module lazerpixel
+    (input wire clk,
+    input wire rst,
+    input wire [10:0]  ox,
+    input wire [10:0]  oy,
+    input wire [10:0]  px,
+    input wire [10:0]  py,
+    output wire        lazer_color);
+
+   wire 	             inobj;
+   wire [6:0]  		 lazer_y, lazer_x;
+	
+   reg [2:0] 	       rom_data;
+   wire [2:0] 	       rom_addr;
+   wire               rom_bit;
+	
+   
+   assign inobj     = (px >= ox) && (px < ox + 11'd8) && (py >=  oy) && (py < oy + 11'd8);
+   
+   assign lazer_x     = inobj ? px - ox : 0;
+   assign lazer_y     = inobj ? py - oy : 0;
+   
+   assign rom_addr   = lazer_y;
+   assign rom_bit    = rom_data[lazer_x];
+   
+   assign lazer_color = (rom_bit) ? 1'b1 : 1'b0;
+
+   always @*
+     case (rom_addr)
+       5'h00: rom_data = 32'b00111100; 
+       5'h01: rom_data = 32'b00111100; 
+       5'h02: rom_data = 32'b00111100; 
+       5'h03: rom_data = 32'b00111100; 
+       5'h04: rom_data = 32'b00111100; 
+       5'h05: rom_data = 32'b00111100; 
+       5'h06: rom_data = 32'b00111100; 
+       5'h07: rom_data = 32'b00111100;  
+     endcase
+     
+endmodule 

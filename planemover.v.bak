@@ -1,0 +1,40 @@
+module ballmover
+  #(parameter RADIUS = 32,
+	      SCREENX = 1024,
+	      SCREENY = 768)
+    (input  wire clk,
+     input  wire rst,
+     input  wire move,
+     input  wire left,
+     input  wire right,
+     output wire [10:0] centerx,
+     output wire [10:0] centery);
+   
+   reg [10:0] 		bx_reg, by_reg;
+   wire [10:0] 		bx_next, by_next;
+   
+   wire [10:0] 		bx_to, by_to;
+   
+   always @(posedge clk or posedge rst)
+	if (rst) 
+	  begin
+	     bx_reg = SCREENX / 2;   // ball starts middle of screen
+	     by_reg = SCREENY - 100;    
+	  end
+	else
+	  begin
+	     bx_reg = bx_next;
+	     by_reg = by_next;
+	  end
+   
+   assign bx_to       = (right && bx_reg < (SCREENX - RADIUS)) ? bx_reg + 1'b1 :
+                        (left && bx_reg > RADIUS) ? bx_reg - 1'b1: bx_reg;
+                        
+   //assign by_to       = (by_dir_reg) ? by_reg + 1'b1 : by_reg - 1'b1;
+
+   assign bx_next     = (move) ? bx_to : bx_reg;
+
+   assign centerx     = bx_reg;
+   assign centery     = by_reg;
+
+endmodule
